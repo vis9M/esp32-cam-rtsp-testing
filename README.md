@@ -34,11 +34,11 @@ in an RTSP streaming system.
 - [ ] Bandwidth
 - [ ] Stability
 
-## Problems
+## Troubleshooting and Challenges
 
-Connecting one ESP32-CAM to the laptop, programming it, connecting to Wi-Fi and seeing live video in browser
+Connecting one ESP32-CAM to the laptop, programming it, connecting to Wi-Fi and seeing live video in browser.
 
-### ESP3232-CAM upload fails with "No serial data received"
+### ESP32-CAM upload fails with "No serial data received"
 
 **Problem**
 
@@ -46,13 +46,13 @@ When uploading firmware through Arduino IDE, compilation completed successfully,
 
 > Failed to connect to ESP32: No serial data received.
 
-The correct COM port was selected and the ESP32-CAM was connected through USB
+The correct COM port was selected and the ESP32-CAM was connected through USB.
 
-**Solution** 
+**Solution**
 
 The ESP32 needed to be placed into flashing/download mode manually following these steps.
 
-1. Hold the **FLASH** button
+1. Hold the **FLASH** button.
 2. Press and release the **RST** button.
 3. Keep **FLASH** pressed briefly.
 4. Release **FLASH**.
@@ -60,10 +60,86 @@ The ESP32 needed to be placed into flashing/download mode manually following the
 
 After entering flashing mode correctly, the firmware uploaded successfully.
 
-**Verification** 
+**Verification**
 
-The Serial Monitor was opened at **115200** baud** and the **RST** button was pressed.
+The Serial Monitor was opened at **115200 baud** and the **RST** button was pressed.
 
 The ESP32 successfully printed:
 
 `ESP32 is working!`
+
+---
+
+### ESP32-CAM does not connect to iPhone hotspot
+
+**Problem**
+
+After configuring the ESP32-CAM to connect to an iPhone hotspot, the Serial Monitor continuously displayed:
+
+`WiFi connecting................................`
+
+The ESP32-CAM did not initially connect to the hotspot.
+
+**Solution**
+
+The laptop network information showed that the iPhone hotspot was operating on the 5 GHz Wi-Fi band. Since the ESP32 uses 2.4 GHz Wi-Fi, **Maximize Compatibility** was enabled in the iPhone Personal Hotspot settings.
+
+The `WiFiScan` example in Arduino IDE was also used to check whether the ESP32 could detect the hotspot.
+
+The ESP32 successfully detected:
+
+`Visal’s iphone | -45 dBm | Channel 6 | WPA2`
+
+This confirmed that the ESP32 Wi-Fi and antenna were working and that the hotspot was available on a compatible network.
+
+The exact hotspot SSID and password were then used in the CameraWebServer program.
+
+**Verification**
+
+After uploading and restarting the ESP32-CAM, the Serial Monitor displayed:
+
+`WiFi connecting...`
+
+`WiFi connected`
+
+`Camera Ready! Use 'http://172.20.10.7' to connect`
+
+The ESP32-CAM was successfully connected to the iPhone hotspot.
+
+---
+
+### Old Serial Monitor output caused misleading camera error
+
+**Problem**
+
+While testing the CameraWebServer program, the Serial Monitor showed the following errors:
+
+> Detected camera not supported.
+
+> Camera probe failed with error 0x106 (ESP_ERR_NOT_SUPPORTED)
+
+> Camera init failed with error 0x106
+
+This initially appeared to indicate a problem with the OV2640 camera or the ESP32-CAM configuration.
+
+**Solution**
+
+The camera was confirmed to be an **OV2640**, and `CAMERA_MODEL_AI_THINKER` was correctly selected in the CameraWebServer configuration.
+
+The Serial Monitor was then cleared before running the ESP32-CAM again. It was discovered that the previous camera errors were old output remaining from earlier runs and were being confused with the current output.
+
+Clearing the Serial Monitor made it possible to observe only the messages from the latest boot.
+
+**Verification**
+
+After clearing the Serial Monitor and restarting the ESP32-CAM, the output showed:
+
+`WiFi connecting...`
+
+`WiFi connected`
+
+`Camera Ready! Use 'http://172.20.10.7' to connect`
+
+Opening the IP address in the browser successfully displayed the **ESP32 OV2640 camera web interface**.
+
+This showed that the camera and CameraWebServer were working correctly.
