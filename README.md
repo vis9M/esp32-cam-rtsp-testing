@@ -59,6 +59,8 @@ After successfull establishment of connection, the ESP32-CAM received a local IP
 
 Live video from the OV2640 camera was successfully viewed in the browser. This confirmed that the ESP32-CAM, OV2640 camera, Wi-Fi connection and video straming were functioning correclty beofre beginning RTSP testing.
 
+![ESP32-CAM live video stream](docs/images/camera_webserver_live_stream.png)
+
 
 
 ## Troubleshooting and Challenges
