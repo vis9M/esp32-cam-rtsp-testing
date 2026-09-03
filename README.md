@@ -9,15 +9,24 @@ in an RTSP streaming system.
 - OV2640 camera
 - ESP32-CAM-MB programmer/development board
 
+## Development Setup
+
+- Arduino IDE 2.3.10
+- ESP32 board package by Espressif Systems
+- Board configuration: AI Thinker ESP32-CAM
+- Serial baud rate: 115200
+- Camera model: OV2640
+- Wi-Fi: 2.4 GHz
+
 ## Progress
 
 ### Stage 1 - Basic camera setup
-- [ ] Install development environment
-- [ ] Connect ESP32-CAM
-- [ ] Upload test firmware
-- [ ] Connect ESP32-CAM to Wi-Fi
-- [ ] Get IP address
-- [ ] View camera stream in browser
+- [x] Install development environment
+- [x] Connect ESP32-CAM
+- [x] Upload test firmware
+- [x] Connect ESP32-CAM to Wi-Fi
+- [x] Get IP address
+- [x] View camera stream in browser
 
 ### Stage 2 - RTSP
 - [ ] Connect one camera to RTSP system
@@ -33,6 +42,24 @@ in an RTSP streaming system.
 - [ ] Latency
 - [ ] Bandwidth
 - [ ] Stability
+
+## Basic Camera Test
+
+The ESP32-CAM was first tested using a simple Arduino sketch to verify that firmware could be uploaded and serial communication was working. The sketch is available in `firmware/basic_test/basic_test.ino`.
+
+After restarting the ESP32, the Serial Monitor at 115200 baud displayed: 
+
+`ESP32 is working!`
+
+After the initial test, the `CameraWebServer`example included with the ESP32 Arduino package was used to test the OV2640 camera and Wi-Fi connectivity.
+
+The ESP32-CAM was configured using the `CAMERA_MODEL_AI_THINKER` camera configuration and aconnected to a 2.4 GHz Wi-Fi network.
+
+After successfull establishment of connection, the ESP32-CAM received a local IP address. The camera web interface was accessed from the  laptop connected to the same network. 
+
+Live video from the OV2640 camera was successfully viewed in the browser. This confirmed that the ESP32-CAM, OV2640 camera, Wi-Fi connection and video straming were functioning correclty beofre beginning RTSP testing.
+
+
 
 ## Troubleshooting and Challenges
 
