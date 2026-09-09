@@ -29,8 +29,8 @@ in an RTSP streaming system.
 - [x] View camera stream in browser
 
 ### Stage 2 - RTSP
-- [ ] Connect one camera to RTSP system
-- [ ] View stream using RTSP client
+- [x] Connect one camera to RTSP system
+- [x] View stream using RTSP client
 
 ### Stage 3 - Multiple cameras
 - [ ] Two cameras
