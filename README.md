@@ -64,6 +64,73 @@ Live video from the OV2640 camera was successfully viewed in the browser. This c
 CameraWebServer interface.*
 
 
+## RTSP Setup and Test
+
+After confirming that the ESP32-CAM, OV2640 camera and Wi-Fi connection were working, RTSP streaming was tested using the open-source [ESP32CAM-RTSP](https://github.com/rzeldent/esp32cam-rtsp) project.
+
+Visual Studio Code with the PlatformIO extension was used to build and upload the RTSP frimware. The PlatformIO environment `esp32cam_ai_thinker` was selected for the ESP32-CAM.
+
+The firmware was successfully built and uploaded to the ESP32-CAM.
+
+After restarting the ESP32-CAM, the firmware created its own Wi-Fi access point:
+
+`ESP32CAM-RTSP-780668f9d108`
+
+The access point could then be found from the available Wi-Fi networks on the laptop.
+
+![ESP32CAM-RTSP Wi-Fi access point](docs/images/rtsp_access_point.png)
+
+*Figure 2. ESP32CAM-RTSP access point visible in the available Wi-Fi networks.*
+
+The laptop was then connected to the ESP32-CAM accesspoint and the configuration page was opened at:
+
+`http://192.168.4.1`
+
+![ESP32CAM-RTSP status page](docs/images/rtsp_status_page.png)
+
+*Figure 3. ESP32CAM-RTSP status page after connecting directly to the ESP32-CAM access point.*
+
+The status page confirmed that:
+
+- Board type was `esp32cam_ai_thinker`
+- PSRAM size was 4 MB
+- Flash size was 4 MB
+- The camera initialized successfully
+
+The initial camera settings were kept at their default values:
+
+- Resolution: QVGA (320×240)
+- Frame duration: 200 ms (5 FPS)
+- JPEG quality: 14
+- Frame buffers: 2
+
+The ESP32-CAM was then configured to connect to the local Wi-Fi hotspot:
+
+`Visal’s iphone` by entering the SSID and corresponding password.
+
+After applying the configuration and restarting the ESP32-CAM, the device successfully connected to the hotspot and received the IP address:
+
+`172.20.10.7`
+
+The Serial Monitor also confirmed that the RTSP server was listening on TCP port 554.
+
+### Testing the RTSP stream
+
+The computer and ESP32-CAM were connected to the same Wi-Fi network.
+
+VLC Media Player was used as the RTSP client.
+
+The following network stream was opened in VLC:
+
+`rtsp://172.20.10.7:554/mjpeg/1`
+
+The live camera video was successfully displayed in VLC.
+
+This confirmed that the ESP32-CAM could operate as an RTSP streaming camera and that the first single-camera RTSP setup was working correctly.
+
+![ESP32-CAM RTSP stream in VLC](docs/images/rtsp_vlc_stream.png)
+
+
 
 ## Troubleshooting and Challenges
 
