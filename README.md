@@ -33,7 +33,7 @@ in an RTSP streaming system.
 - [x] View stream using RTSP client
 
 ### Stage 3 - Multiple cameras
-- [ ] Two cameras
+- [x] Two cameras
 - [ ] Three cameras
 - [ ] Four cameras
 
@@ -125,7 +125,7 @@ The assigned IP address during this test was:
 
 *Figure 5. Serial Monitor confirming the Wi-Fi connection, assigned IP address and successful startup of the RTSP server.*
 
-### Testing the RTSP stream
+### Single-Camera RTSP Test
 
 The computer and ESP32-CAM were connected to the same Wi-Fi network.
 
@@ -142,6 +142,27 @@ This confirmed that the ESP32-CAM could operate as an RTSP streaming camera and 
 ![ESP32-CAM RTSP stream in VLC](docs/images/rtsp_vlc_stream.png)
 
 *Figure 6. Live RTSP video from the ESP32-CAM displayed in VLC Media Player.*
+
+
+### Two-Camera RTSP Test
+
+After successfully testing RTSP stream with a single ESP32-CAM, a second ESP32-CAM was configured with the same RTSP firmware and camera settings.
+
+Both ESP32-CAM devices were connected to the same Wi-Fi hotspot and received separate local IP addresses:
+
+- Camera 1: `172.20.10.7`
+- Camera 2: `172.20.10.8`
+
+The laptop was connected to the same Wi-Fi network and the two RTSP stream were opened simultaneously in separate VLC media player windows using:
+
+- Camera 1: `rtsp://172.20.10.7:554/mjpeg/1`
+- Camera 2: `rtsp://172.20.10.8:554/mjpeg/1`
+
+Both ESP32-CAM devices successfully displayed live video simultaneously. This confirmed that two ESP32-CAM devices could operate on the same network and provide independent RTSP streams at the same time.
+
+![Simultaneous RTSP streams from two ESP32-CAM devices](docs/images/two_camera_rtsp_stream.png)
+
+*Figure 7. Simultaneous RTSP streaming from two ESP32-CAM devices displayed in separate VLC Media Player windows.*
 
 
 ## Troubleshooting and Challenges
