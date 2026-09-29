@@ -33,9 +33,10 @@ in an RTSP streaming system.
 - [x] View stream using RTSP client
 
 ### Stage 3 - Multiple cameras
-- [x] Two cameras
-- [ ] Three cameras
-- [ ] Four cameras
+- [x] Configure second ESP32-CAM
+- [x] Stream from two ESP32-CAM devices simultaneously
+- [x] Connect cameras to AIoT Garage network
+- [x] Integrate camera streams with go2rtc
 
 ### Stage 4 - Performance testing
 - [ ] FPS
@@ -163,6 +164,38 @@ Both ESP32-CAM devices successfully displayed live video simultaneously. This co
 ![Simultaneous RTSP streams from two ESP32-CAM devices](docs/images/two_camera_rtsp_stream.png)
 
 *Figure 7. Simultaneous RTSP streaming from two ESP32-CAM devices displayed in separate VLC Media Player windows.*
+
+
+### AIoT Garage RTSP Server Integration
+
+After verifying simultaneous RTSP streaming from two ESP32-CAM devices locally, the cameras were connected to the AIoT Garage network for integration with the central RTSP streaming system.
+
+Both ESP32-CAM devices were configured to connect to the AIoT Garage Wi-Fi network while keeping the same camera settings:
+
+- Resolution: QVGA (320×240)
+- Frame duration: 200 ms (5 FPS)
+- JPEG quality: 14
+
+After connecting to the network, the cameras received separate local IP addresses:
+
+- Camera 1: `192.168.52.141`
+- Camera 2: `192.168.52.253`
+
+The RTSP streams were first verified directly using VLC Media Player:
+
+- Camera 1: `rtsp://192.168.52.141:554/mjpeg/1`
+- Camera 2: `rtsp://192.168.52.253:554/mjpeg/1`
+
+Both streams were successfully displayed.
+
+The camera streams were then integrated with the go2rtc streaming application running on the AIoT Garage server. The streams were configured as:
+
+- `esp32cam_0`
+- `esp32cam_1`
+
+Both camera streams were successfully accessed through the go2rtc web interface.
+
+This confirmed that the ESP32-CAM RTSP streams could be received and accessed through the central AIoT Garage streaming system.
 
 
 ## Troubleshooting and Challenges
@@ -356,3 +389,83 @@ The firmware upload also completed successfully for:
 `esp32cam_ai_thinker`
 
 The ESP32-CAM restarted with the ESP32CAM-RTSP firmware and created its configuration access point.
+
+---
+
+### ESP32CAM-RTSP configuration remained after reflashing firmware
+
+**Problem**
+
+While preparing the ESP32-CAM for connection to the AIoT Garage network, the password for the ESP32CAM-RTSP configuration access point was no longer known.
+
+The ESP32CAM-RTSP firmware was uploaded again using the PlatformIO environment:
+
+`esp32cam_ai_thinker`
+
+However, after reflashing and restarting the ESP32-CAM, the previous configuration was still present and the access point continued to require the previously configured password.
+
+**Solution**
+
+It was discovered that uploading the firmware again did not remove the previously stored configuration.
+
+The ESP32 flash memory was therefore completely erased using the PlatformIO executable directly from PowerShell:
+
+```powershell
+& "C:\Users\vis9M\.platformio\penv\Scripts\platformio.exe" run -e esp32cam_ai_thinker -t erase
+```
+
+The ESP32-CAM was placed into flashing/download mode using the **FLASH** and **RST** buttons before performing the erase.
+
+After the flash memory was successfully erased, the ESP32CAM-RTSP firmware was uploaded again using the `esp32cam_ai_thinker` environment.
+
+**Verification**
+
+After restarting the ESP32-CAM, the Serial Monitor showed that the previous configuration had been removed and the device started in its initial configuration mode.
+
+The ESP32-CAM created its configuration access point again and the configuration interface at:
+
+`http://192.168.4.1`
+
+could be accessed.
+
+The ESP32-CAM was then successfully configured for the AIoT Garage Wi-Fi network.
+
+---
+
+### ESP32-CAM Wi-Fi connection fails with `4WAY_HANDSHAKE_TIMEOUT`
+
+**Problem**
+
+While connecting the second ESP32-CAM to the AIoT Garage Wi-Fi network, the device detected the network but failed to establish the connection.
+
+The Serial Monitor displayed:
+
+`Reason: 15 - 4WAY_HANDSHAKE_TIMEOUT`
+
+The ESP32-CAM therefore did not initially receive an IP address from the AIoT Garage network.
+
+**Solution**
+
+The ESP32CAM-RTSP configuration interface was opened by connecting to the ESP32-CAM configuration access point.
+
+The AIoT Garage Wi-Fi credentials were entered again and the configuration was saved.
+
+The ESP32-CAM was then restarted and allowed to reconnect to the configured Wi-Fi network.
+
+**Verification**
+
+After restarting, the Serial Monitor displayed:
+
+`WiFi connected`
+
+The second ESP32-CAM received the local IP address:
+
+`192.168.52.253`
+
+The RTSP server also started successfully on TCP port 554.
+
+The camera stream was then successfully opened in VLC using:
+
+`rtsp://192.168.52.253:554/mjpeg/1`
+
+This confirmed that the ESP32-CAM had successfully connected to the AIoT Garage network and that its RTSP stream was accessible.
