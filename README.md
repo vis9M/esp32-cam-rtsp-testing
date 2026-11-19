@@ -469,3 +469,47 @@ The camera stream was then successfully opened in VLC using:
 `rtsp://192.168.52.253:554/mjpeg/1`
 
 This confirmed that the ESP32-CAM had successfully connected to the AIoT Garage network and that its RTSP stream was accessible.
+
+
+### Challenge — Damaged Camera Ribbon Cables and Replacement Camera Initialization Failure
+
+**Problem:**
+
+During hardware development, the ribbon cables of the original ESP32-CAM camera modules were accidentally damaged, making the cameras unusable. Two replacement camera modules, advertised by the vendor as OV2640 sensors, were obtained.
+
+After installing the replacement modules, one camera worked successfully, while the other, marked `XRZ0F3M-V240-V2.0`, failed during initialization.
+
+**Error message:**
+
+```text
+E (87) i2c.master: I2C transaction timeout detected
+E (87) sccb-ng: SCCB_Write Failed addr:0x30, reg:0x3e, data:0x00, ret:259
+E (87) camera: Camera probe failed with error 0xffffffff(ESP_FAIL)
+Camera init failed with error 0xffffffff
+```
+
+**Troubleshooting steps:**
+
+1. Checked the camera ribbon-cable connections.
+2. Tested the working replacement camera (`OV2640-75MM`) on both ESP32-CAM boards.
+3. Confirmed that the working camera operated successfully on both boards.
+4. Tested the failing replacement camera (`XRZ0F3M-V240-V2.0`) on both ESP32-CAM boards.
+5. Observed the same camera initialization error on both boards.
+
+**Findings:**
+
+Both ESP32-CAM boards were able to operate the known-working camera module. The initialization failure followed the second replacement camera when it was moved between boards.
+
+This suggests that the second replacement camera module may be defective or incompatible, rather than the ESP32-CAM boards being faulty.
+
+**Solution / Current status:**
+
+A new OV2640 camera module was ordered to replace the failing module. Delivery is expected by 30 November 2026.
+
+**Verification pending:**
+
+Once the replacement arrives, its initialization and RTSP streaming functionality will be tested before proceeding with simultaneous two-camera performance measurements.
+
+**Lesson learned:**
+
+Camera ribbon cables and connectors should be handled carefully, with power disconnected during installation or removal. When camera initialization fails, swapping camera modules between known-working boards can help isolate whether the problem originates from the camera module or the ESP32-CAM board.
